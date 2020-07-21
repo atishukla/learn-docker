@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   jenkins:
-    image: jenkins/jenkins:lts
+    image: jenkins-with-jq:1.0
     privileged: true
     user: root
     ports:
