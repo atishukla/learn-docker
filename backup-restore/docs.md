@@ -108,4 +108,116 @@ root@ac7c2db1161a:/# type jq
 jq is /usr/bin/jq
 ```
 
+## Backing and restoring data volumes
+
+We will see an example:
+
+In here we will create a jenkins container and do some configuration like create a test job.
+
+Then we remove all and try to restore the content in the new container.
+
+So here we have few things to do:
+
+1. To find out where the volume is mapped.
+
+We can do it from the docker inspect command and see Mounts. Then take destination of the folder and it will show us the folder to backup.
+
+```
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker inspect -f '{{ json .Mounts }}' jenkins | jq .
+[
+  {
+    "Type": "bind",
+    "Source": "/var/run/docker.sock",
+    "Destination": "/var/run/docker.sock",
+    "Mode": "rw",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "volume",
+    "Name": "jenkins-config_jenkins-dv",
+    "Source": "/var/lib/docker/volumes/jenkins-config_jenkins-dv/_data",
+    "Destination": "/var/jenkins_home",
+    "Driver": "local",
+    "Mode": "rw",
+    "RW": true,
+    "Propagation": ""
+  },
+  {
+    "Type": "bind",
+    "Source": "/usr/local/bin/docker",
+    "Destination": "/usr/local/bin/docker",
+    "Mode": "rw",
+    "RW": true,
+    "Propagation": "rprivate"
+  }
+]
+```
+
+Here we see that the data volume destination is /var/jenkins_home
+
+```
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker exec jenkins ls -ltr /var/jenkins_home
+total 112
+-rw-rw-r--  1 root root  7152 Jul 15 14:54 tini_pub.gpg
+-rw-r--r--  1 root root    50 Jul 21 20:07 copy_reference_file.log
+drwxr-xr-x 11 root root  4096 Jul 21 20:07 war
+-rw-r--r--  1 root root     0 Jul 21 20:08 secret.key.not-so-secret
+-rw-r--r--  1 root root    64 Jul 21 20:08 secret.key
+drwxr-xr-x  2 root root  4096 Jul 21 20:08 nodes
+-rw-r--r--  1 root root   156 Jul 21 20:08 hudson.model.UpdateCenter.xml
+-rw-------  1 root root  1712 Jul 21 20:08 identity.key.enc
+-rw-r--r--  1 root root   171 Jul 21 20:08 jenkins.telemetry.Correlator.xml
+drwxr-xr-x  2 root root  4096 Jul 21 20:08 userContent
+drwxr-xr-x  3 root root  4096 Jul 21 20:08 logs
+-rw-r--r--  1 root root   907 Jul 21 20:08 nodeMonitors.xml
+drwxr-xr-x 74 root root 12288 Jul 21 20:12 plugins
+drwxr-xr-x  2 root root  4096 Jul 21 20:12 workflow-libs
+drwxr-xr-x  2 root root  4096 Jul 21 20:12 updates
+-rw-r--r--  1 root root   475 Jul 21 20:12 com.cloudbees.hudson.plugins.folder.config.AbstractFolderConfiguration.xml
+-rw-r--r--  1 root root   370 Jul 21 20:12 hudson.plugins.git.GitTool.xml
+drwxr-xr-x  3 root root  4096 Jul 22 18:56 users
+-rw-r--r--  1 root root   183 Jul 22 18:56 jenkins.model.JenkinsLocationConfiguration.xml
+-rw-r--r--  1 root root     7 Jul 22 18:56 jenkins.install.UpgradeWizard.state
+-rw-r--r--  1 root root     7 Jul 22 18:56 jenkins.install.InstallUtil.lastExecVersion
+-rw-r--r--  1 root root  1647 Jul 22 18:56 config.xml
+drwxr-xr-x  3 root root  4096 Jul 22 18:56 jobs
+drwxr-xr-x  3 root root  4096 Jul 22 18:57 workspace
+drwx------  4 root root  4096 Jul 22 18:57 secrets
+-rw-r--r--  1 root root   129 Jul 22 18:58 queue.xml
+```
+
+We have to take backup of this volume now
+
+We will take the tar of this file and save it somewhere (/home/vagrant/backups/) as a backup
+
+To create backup :
+
+```
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker run --rm --volumes-from jenkins -v /home/vagrant/backups:/backups alpine tar cvf /backups/22-07-2020-jenkins-config_jenkins-dv.tar /var/jenkins_home
+
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ ls -lthra /home/vagrant/backups/
+total 882M
+-rw------- 1 vagrant vagrant 663M Jul 21 19:56 jenkins-with-jq.tar
+drwxr-xr-x 8 vagrant vagrant 4.0K Jul 21 20:07 ..
+drwxrwxr-x 2 vagrant vagrant 4.0K Jul 22 20:49 .
+-rw-r--r-- 1 root    root    219M Jul 22 20:49 22-07-2020-jenkins-config_jenkins-dv.tar
+```
+
+Here in the above command: 
+--rm - to delete and remove container after the command
+--volumes-from - to get the volume of the running container
+-v /home/vagrant/backups:/backups - mounting target folder on host to backups in the alpine container
+-alpine image - it has tar
+/22-07-2020-jenkins-config_jenkins-dv.tar - the name of the backup it has to be meaningful in the automated process
+/var/jenkins_home - path of the destination ( can get from the mount command as shown above)
+
+
+
+
+
+
+
+
+
 
