@@ -295,6 +295,12 @@ vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker inspect 
 vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker run --rm --volumes-from jenkins -v /home/vagrant/backups:/backups alpine sh -c "cd /var/jenkins_home && rm -r * && tar xvf /backups/22-07-2020-jenkins-config_jenkins-dv.tar"
 ```
 
+And finally restart the docker services for changes to reflect
+
+``` docker-compose restart```
+
+And Voila !!!...
+
 
 
 
