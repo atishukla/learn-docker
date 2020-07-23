@@ -194,7 +194,7 @@ We will take the tar of this file and save it somewhere (/home/vagrant/backups/)
 To create backup :
 
 ```
-vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker run --rm --volumes-from jenkins -v /home/vagrant/backups:/backups alpine tar cvf /backups/22-07-2020-jenkins-config_jenkins-dv.tar /var/jenkins_home
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker run --rm --volumes-from jenkins -v /home/vagrant/backups:/backups alpine tar -czvf /backups/22-07-2020-jenkins-config_jenkins-dv.tar /var/jenkins_home .
 
 vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ ls -lthra /home/vagrant/backups/
 total 882M
@@ -211,6 +211,90 @@ Here in the above command:
 -alpine image - it has tar
 /22-07-2020-jenkins-config_jenkins-dv.tar - the name of the backup it has to be meaningful in the automated process
 /var/jenkins_home - path of the destination ( can get from the mount command as shown above)
+
+
+### Restoring now to the new container
+
+- It is important to delete the container and the existing volume for the same.
+
+```
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker-compose down -v && docker-compose rm -f
+Stopping jenkins ... done
+Removing jenkins ... done
+Removing network jenkins-config_default
+Removing volume jenkins-config_jenkins-dv
+No stopped containers
+
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ sudo ls -ltr /var/lib/docker/volumes
+total 24
+-rw------- 1 root root 32768 Jul 23 17:59 metadata.db
+
+```
+
+- Now I will run the compose again to create the empty volume for the jenkins container
+
+```
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker-compose up -d
+Creating network "jenkins-config_default" with the default driver
+Creating volume "jenkins-config_jenkins-dv" with local driver
+Creating jenkins ... done
+```
+
+```
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ sudo ls -ltr /var/lib/docker/volumes
+total 28
+-rw------- 1 root root 32768 Jul 23 18:01 metadata.db
+drwxr-xr-x 3 root root  4096 Jul 23 18:01 jenkins-config_jenkins-dv
+```
+
+- Check the time of the new jenkins
+
+```
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker container ls
+CONTAINER ID        IMAGE                 COMMAND                  CREATED              STATUS              PORTS                                              NAMES
+0d3c78d96a4a        jenkins-with-jq:1.0   "/sbin/tini -- /usr/…"   About a minute ago   Up About a minute   0.0.0.0:50000->50000/tcp, 0.0.0.0:8081->8080/tcp   jenkins
+```
+
+- so now if we see we have to restore the volume to a mounted folder we know in this case it is /var/jenkins_home. or we can find it from the mount in docker inspect or docker compose file
+
+```
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker inspect -f '{{ json .Mounts }}' jenkins | jq
+[
+  {
+    "Type": "volume",
+    "Name": "jenkins-config_jenkins-dv",
+    "Source": "/var/lib/docker/volumes/jenkins-config_jenkins-dv/_data",
+    "Destination": "/var/jenkins_home",
+    "Driver": "local",
+    "Mode": "rw",
+    "RW": true,
+    "Propagation": ""
+  },
+  {
+    "Type": "bind",
+    "Source": "/var/run/docker.sock",
+    "Destination": "/var/run/docker.sock",
+    "Mode": "rw",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/usr/local/bin/docker",
+    "Destination": "/usr/local/bin/docker",
+    "Mode": "rw",
+    "RW": true,
+    "Propagation": "rprivate"
+  }
+]
+```
+
+- Now we have to run the restore command
+
+```
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker run --rm --volumes-from jenkins -v /home/vagrant/backups:/backups alpine sh -c "cd /var/jenkins_home && rm -r * && tar xvf /backups/22-07-2020-jenkins-config_jenkins-dv.tar"
+```
+
 
 
 
