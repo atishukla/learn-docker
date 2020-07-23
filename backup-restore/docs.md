@@ -194,7 +194,7 @@ We will take the tar of this file and save it somewhere (/home/vagrant/backups/)
 To create backup :
 
 ```
-vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker run --rm --volumes-from jenkins -v /home/vagrant/backups:/backups alpine tar -czvf /backups/22-07-2020-jenkins-config_jenkins-dv.tar /var/jenkins_home .
+vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ docker run --rm --volumes-from jenkins -v /home/vagrant/backups:/backups alpine tar -czvf /backups/22-07-2020-jenkins-config_jenkins-dv.tar -C /var/jenkins_home .
 
 vagrant@devops-box:~/learn-docker/backup-restore/jenkins-config$ ls -lthra /home/vagrant/backups/
 total 882M
