@@ -24,6 +24,12 @@ do
   # Get the number of mounts
   MOUNTSNUM=$(docker inspect --format '{{json .Mounts}}' $CONTAINER | jq '. | length')
   echo "Mount number is $MOUNTSNUM"
+  volumesfromcontainer=$(docker inspect --format '{{json .Mounts}}' $CONTAINER | jq '.')
+  for (( i=0; i <= $((MOUNTSNUM-1)); i++ ))
+  do
+    echo "Analyzing mount #$i"
+    echo $volumesfromcontainer | jq '.['$i']'
+  done
 done
 
 
