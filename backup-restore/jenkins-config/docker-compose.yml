@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   jenkins:
-    image: jenkins-with-jq:1.0
+    image: jenkins:2.60.3
     privileged: true
     user: root
     ports:
@@ -12,7 +12,19 @@ services:
       - jenkins-dv:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/local/bin/docker:/usr/local/bin/docker
+  
+  nexus:
+    image: sonatype/nexus3
+    privileged: true
+    user: root
+    ports:
+      - 18081:8081
+    container_name: nexus
+    volumes:
+      - nexus-data:/nexus-data
 
 volumes:
   jenkins-dv:
+    driver: local
+  nexus-dv:
     driver: local
