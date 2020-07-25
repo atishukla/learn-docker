@@ -17,10 +17,13 @@ TIMESTAMP=$(date +%Y%m%d%H%M%S)
 echo $TIMESTAMP
 
 # Loop through all the containers
-
+# When you start the compose without container name it will use the folder name for the container name
 for CONTAINER in $(docker ps -a --format={{.Names}} | grep $NAME)
 do
   echo "CONTAINER is $CONTAINER"
+  # Get the number of mounts
+  MOUNTSNUM=$(docker inspect --format '{{json .Mounts}}' $CONTAINER | jq '. | length')
+  echo "Mount number is $MOUNTSUM"
 done
 
 
