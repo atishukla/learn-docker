@@ -23,7 +23,7 @@ do
   echo "CONTAINER is $CONTAINER"
   # Get the number of mounts
   MOUNTSNUM=$(docker inspect --format '{{json .Mounts}}' $CONTAINER | jq '. | length')
-  echo "Mount number is $MOUNTSUM"
+  echo "Mount number is $MOUNTSNUM"
 done
 
 
