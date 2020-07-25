@@ -12,8 +12,16 @@ echo "Backup of $NAME"
 BACKUP_RC=0
 
 BACKUP_PATH=/home/vagrant/backups
+TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
-project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
-echo $project_dir
+echo $TIMESTAMP
+
+# Loop through all the containers
+
+for CONTAINER in $(docker -ps -a --format={{.Names}} | grep $NAME)
+do
+  echo "CONTAINER is $CONTAINER"
+done
+
 
 
