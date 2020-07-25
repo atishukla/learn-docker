@@ -67,6 +67,4 @@ then
 else
   echo "Back up is successful"
   exit 0
-
-
-
+fi
