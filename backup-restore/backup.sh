@@ -33,8 +33,11 @@ do
     nameetdest=$(echo $volumesfromcontainer | jq -r '.['$i'] | .Name,.Destination')
     DVNAME=$(echo $nameetdest | awk '{print $1}')
     DVDEST=$(echo $nameetdest | awk '{print $2}')
-    echo $DVNAME
-    echo $DVDEST
+    # For the ones which are not data the name will be null
+    if [ $DVNAME -ne 'null' ]
+    then
+      echo $DVDEST
+    fi
   done
 done
 
