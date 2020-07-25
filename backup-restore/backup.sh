@@ -34,7 +34,7 @@ do
     DVNAME=$(echo $nameetdest | awk '{print $1}')
     DVDEST=$(echo $nameetdest | awk '{print $2}')
     # For the ones which are not data the name will be null
-    if [ "$DVNAME" -ne 'null' ]
+    if [ "$DVNAME" != 'null' ]
     then
       echo $DVDEST
     fi
