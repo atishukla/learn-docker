@@ -33,6 +33,8 @@ do
     nameetdest=$(echo $volumesfromcontainer | jq -r '.['$i'] | .Name,.Destination')
     DVNAME=$(echo $nameetdest | awk '{print $1}')
     DVDEST=$(echo $nameetdest | awk '{print $2}')
+    echo $DVNAME
+    echo $DVDEST
   done
 done
 
