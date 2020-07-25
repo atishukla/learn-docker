@@ -31,7 +31,8 @@ do
     echo $volumesfromcontainer | jq '.['$i']'
     # the mounts volume for our action would be named volume and will have a name
     nameetdest=$(echo $volumesfromcontainer | jq -r '.['$i'] | .Name,.Destination')
-    echo $nameetdest
+    DVNAME=$(echo $nameetdest | awk '{print $1}')
+    DVDEST=$(echo $nameetdest | awk '{print $2}')
   done
 done
 
