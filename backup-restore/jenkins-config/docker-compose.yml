@@ -21,7 +21,7 @@ services:
       - 18081:8081
     container_name: nexus
     volumes:
-      - nexus-data:/nexus-data
+      - nexus-dv:/nexus-data
 
 volumes:
   jenkins-dv:
