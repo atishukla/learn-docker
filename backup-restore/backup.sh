@@ -30,7 +30,7 @@ do
     echo "Analyzing mount #$i"
     echo $volumesfromcontainer | jq '.['$i']'
     # the mounts volume for our action would be named volume and will have a name
-    nameetdest=$($volumesfromcontainer | jq '.['$i'] | .Name,.Destination')
+    nameetdest=$(echo $volumesfromcontainer | jq -r '.['$i'] | .Name,.Destination')
     echo "The Name and destination of the volumes are $nameetdest"
   done
 done
