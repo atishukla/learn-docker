@@ -18,7 +18,7 @@ echo $TIMESTAMP
 
 # Loop through all the containers
 
-for CONTAINER in $(docker -ps -a --format={{.Names}} | grep $NAME)
+for CONTAINER in $(docker ps -a --format={{.Names}} | grep $NAME)
 do
   echo "CONTAINER is $CONTAINER"
 done
