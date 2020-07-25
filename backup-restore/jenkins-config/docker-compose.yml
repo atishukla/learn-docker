@@ -7,7 +7,7 @@ services:
     ports:
       - 8081:8080
       - 50000:50000
-    container_name: jenkins
+    # container_name: jenkins
     volumes:
       - jenkins-dv:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
@@ -19,7 +19,7 @@ services:
     user: root
     ports:
       - 18081:8081
-    container_name: nexus
+    # container_name: nexus
     volumes:
       - nexus-dv:/nexus-data
 
