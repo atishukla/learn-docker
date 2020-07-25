@@ -42,7 +42,7 @@ do
         echo "Volume is $DVNAME, mount location is $DVDEST"
         TARNAME=$TIMESTAMP-$CONTAINER-$DVNAME.tar
         echo "Creating the tarball $BACKUP_PATH/$TARNAME"
-        docker run --rm --volumes-from $CONTAINER -v $BACKUP_PATH:/backup alpine tar -czvf /backup/$TARNAME -C $DVDEST .
+        docker run --rm --volumes-from $CONTAINER -v $BACKUP_PATH:/backup alpine tar -czvf /backup/$TARNAME -C $DVDEST . > /dev/null
         the_rc=$?
         if [ $the_rc -ne 0 ]
         then
@@ -65,6 +65,6 @@ then
   rm -f $TIMESTAMP*
   exit 1
 else
-  echo "Back up is successful"
+  echo "Back up is successful....."
   exit 0
 fi
