@@ -36,10 +36,37 @@ do
     # For the ones which are not data the name will be null
     if [ "$DVNAME" != 'null' ]
     then
-      echo $DVDEST
+      # docker compose copies folder name or project name to volume
+      if grep "$NAME" <<<"$DVNAME"
+      then
+        echo "Volume is $DVNAME, mount location is $DVDEST"
+        TARNAME=$TIMESTAMP-$CONTAINER-$DVNAME.tar
+        echo "Creating the tarball $BACKUP_PATH/$TARNAME"
+        docker run --rm --volumes-from $CONTAINER -v $BACKUP_PATH:/backup alpine tar -czvf /backup/$TARNAME -C $DVDEST .
+        the_rc=$?
+        if [ $the_rc -ne 0 ]
+        then
+          echo "docker run command failed with return code $the_rc"
+          # We assign one to BACKUP_RC
+          BACKUP_RC=1
+        fi
+      else
+        echo "Did not find any relevant volume, may be its not from compose file.."
+      fi
+    else
+      echo "This volume is not data volume can be socket mapping etc with TYPE BIND.."
     fi
   done
 done
+
+if [ $BACKUP_RC -ne 0 ]
+then
+  echo "Backup failed"
+  rm -f $TIMESTAMP*
+  exit 1
+else
+  echo "Back up is successful"
+  exit 0
 
 
 
