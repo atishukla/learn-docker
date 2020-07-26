@@ -18,3 +18,15 @@ else
   fi
 fi
 echo "Target timestamp is **** $TIMESTAMP ****"
+
+RESTORE_RC=0
+BACKUP_PATH=/home/vagrant/backups
+
+# To restore all the containers volumes
+
+# The container would be run by compose and once running their data volume would be replaced by backup
+
+for CONTAINER in $(docker ps -a --format={{.Names}})
+do
+  echo "Container is $CONTAINER"
+done
