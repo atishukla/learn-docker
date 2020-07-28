@@ -45,8 +45,8 @@ do
     then
       echo "Vol is $DVNAME, and destination is $DVDEST"
       # Now from the backup dir we first take the one which match timestamp
-      backup_name=$(ls -lthr $BACKUP_PATH | grep "$TIMESTAMP" | grep -o "$DVNAME")
-      echo "** The backups are $backup_name **"
+      backup_tar=$(ls -lthr $BACKUP_PATH | grep "$TIMESTAMP" | grep "$DVNAME" | awk '{print $9}')
+      echo "** The backups are $backup_tar **"
     fi
   done
 done
