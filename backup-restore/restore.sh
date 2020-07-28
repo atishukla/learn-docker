@@ -42,7 +42,8 @@ do
     DVNAME=$(echo $nameetdest | awk '{print $1}')
     DVDEST=$(echo $nameetdest | awk '{print $2}')
     # For the ones which are not data the name will be null
-    echo $DVNAME
-    echo $DVTEST
+    if [ "$DVNAME" != 'null' ]
+    then
+      echo "** Vol is $DVNAME, and destination is $DVDEST **"
   done
 done
