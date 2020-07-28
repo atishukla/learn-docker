@@ -48,7 +48,7 @@ do
       backup_tar=$(ls -lthr $BACKUP_PATH | grep "$TIMESTAMP" | grep "$DVNAME" | awk '{print $9}')
       echo "The backups are $backup_tar"
     else
-    fi
       echo "This is not the data volume....."
+    fi
   done
 done
