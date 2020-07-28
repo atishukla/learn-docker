@@ -45,5 +45,6 @@ do
     if [ "$DVNAME" != 'null' ]
     then
       echo "** Vol is $DVNAME, and destination is $DVDEST **"
+    fi
   done
 done
