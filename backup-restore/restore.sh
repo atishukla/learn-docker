@@ -47,8 +47,8 @@ do
       # Now from the backup dir we first take the one which match timestamp
       backup_tar=$(ls -lthr $BACKUP_PATH | grep "$TIMESTAMP" | grep "$DVNAME" | awk '{print $9}')
       echo "The backups are $backup_tar"
-    fi
     else
+    fi
       echo "This is not the data volume....."
   done
 done
