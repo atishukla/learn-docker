@@ -47,8 +47,25 @@ do
       # Now from the backup dir we first take the one which match timestamp
       backup_tar=$(ls -lthr $BACKUP_PATH | grep "$TIMESTAMP" | grep "$DVNAME" | awk '{print $9}')
       echo "The backups are $backup_tar"
+      docker run --rm --volumes-from jenkins -v $BACKUP_PATH:/backups alpine sh -c "cd $DVDEST && rm -r * && tar xvf /backups/$backup_tar"
+      the_rc=$?
+      if [ $the_rc -ne 0 ]
+      then
+        echo "docker run command failed with return code $the_rc"
+        # We assign one to BACKUP_RC
+        RESTORE_RC=1
+      fi
     else
       echo "This is not the data volume....."
     fi
   done
 done
+
+if [ $RESTORE_RC -ne 0 ]
+then
+  echo "Backup failed"
+  exit 1
+else
+  echo "Restore is successful....."
+  exit 0
+fi
