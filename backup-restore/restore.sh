@@ -37,5 +37,11 @@ do
   do
     echo "Analyzing mount #$i"
     echo $volumesfromcontainer | jq '.['$i']'
+    nameetdest=$(echo $volumesfromcontainer | jq -r '.['$i'] | .Name,.Destination')
+    DVNAME=$(echo $nameetdest | awk '{print $1}')
+    DVDEST=$(echo $nameetdest | awk '{print $2}')
+    # For the ones which are not data the name will be null
+    echo $DVNAME
+    echo $DVTEST
   done
 done
