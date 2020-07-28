@@ -43,7 +43,10 @@ do
     # For the ones which are not data the name will be null
     if [ "$DVNAME" != 'null' ]
     then
-      echo "** Vol is $DVNAME, and destination is $DVDEST **"
+      echo "Vol is $DVNAME, and destination is $DVDEST"
+      # Now from the backup dir we first take the one which match timestamp
+      backup_name=$(ls -lthr $BACKUP_PATH | grep "$TIMESTAMP" | grep "$DVNAME")
+      echo "** The backups are $backup_name **"
     fi
   done
 done
