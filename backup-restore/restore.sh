@@ -6,14 +6,21 @@
 if [ $# -ne 1 ]
 then
   echo 'Run the script as restore.sh with latest or date <YYYYMMDD> which is the backup date to restore to..'
-  echo 'Usage: restore.sh <latest|20200725>'
+  echo 'Usage: restore.sh <latest|20200725|20200728200554>'
   exit 1
 else
   if [ "$1" == 'latest' ]
   then
     TIMESTAMP=$(date +%Y%m%d)
+  elif [ "${#1}" -eq 14 ]
+  then 
+    echo "Full date with time provided..make an exact search.."
+    TIMESTAMP=$1
+  elif [ "${#1}" -lt 8 ] 
+  then 
+    echo "invalid date ..should have MM & dd or full timestamp"
+    exit 1
   else
-    if [ "${#1}" -lt 8 ]; then echo "invalid date ..should have MM & dd"; exit 1; fi
     TIMESTAMP=$(date --date="$1" +%Y%m%d)
   fi
 fi
