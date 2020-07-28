@@ -30,7 +30,7 @@ for CONTAINER in $(docker ps -a --format={{.Names}})
 do
   echo "All the containers running currently are $CONTAINER"
   # Check their mounts
-  MOUNTSNUM=$(docker inspect --format '{{json .Mounts}}') $CONTAINER | jq '. | length')
+  MOUNTSNUM=$(docker inspect --format '{{json .Mounts}}' $CONTAINER | jq '. | length')
   echo "Mount number is $MOUNTSNUM"
   volumesfromcontainer=$(docker inspect --format '{{json .Mounts}}' $CONTAINER | jq '.')
   for (( i=0; i <= $((MOUNTSNUM-1)); i++ ))
