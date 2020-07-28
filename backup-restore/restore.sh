@@ -70,7 +70,7 @@ done
 
 if [ $RESTORE_RC -ne 0 ]
 then
-  echo "Backup failed"
+  echo "Restore failed"
   exit 1
 else
   echo "Restore is successful....."
