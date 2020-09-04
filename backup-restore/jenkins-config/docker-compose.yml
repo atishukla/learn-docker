@@ -1,17 +1,19 @@
 version: '3.7'
 services:
   jenkins:
-    image: jenkins:2.60.3
+    image: jenkins/jenkins:2.232
     privileged: true
     user: root
     ports:
       - 8081:8080
       - 50000:50000
-    # container_name: jenkins
+    container_name: jenkins
     volumes:
-      - jenkins-dv:/var/jenkins_home
+      - /var/jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/local/bin/docker:/usr/local/bin/docker
+      - /usr/bin/docker:/usr/bin/docker
+      - /home/atishukla/.docker:/root/.docker
+      - /etc/localtime:/etc/localtime:ro
   
   nexus:
     image: sonatype/nexus3
@@ -24,7 +26,7 @@ services:
       - nexus-dv:/nexus-data
 
 volumes:
-  jenkins-dv:
-    driver: local
+  # jenkins-dv:
+  #   driver: local
   nexus-dv:
     driver: local
