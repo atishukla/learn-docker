@@ -1,5 +1,8 @@
+import os
+
+
 def sub_main():
-    print('From submain called in main')
+    print(f"Hello {os.environ['HELLO']}")
 
 
 def main():
